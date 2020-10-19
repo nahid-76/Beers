@@ -1,7 +1,7 @@
 import React from 'react';
 import { DropdownToggle,Anchor } from './styledComponents';
 const ListGroup = (props) => {
-    const { items, onItemSelect, selectedItem } = props;
+    const { items, onItemSelect } = props;
     return (
 
         <div className="dropdown" >

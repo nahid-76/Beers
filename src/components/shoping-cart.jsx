@@ -1,32 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { getbeers } from './../serveces/beerService';
 import ShopingCard from './common/shoping-card';
-import { getLocalStorage } from './common/handleLocalStorage'
 import PaymentCard from './common/paymentCard';
-
+import { ShopingItemsContext } from '../contexts/shopingitemscontext'
 
 const ShopingCart = () => {
   const [shopingItems, setShopingItems] = useState([]);
   const [itemCount, setItemCount] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [basketItemCount, setBasketItemCount] = useState(0);
+  const { shopItems, handleShopItems } = useContext(ShopingItemsContext);
+
+  useEffect(() => {
+    const localItemsCount = localStorage.getItem('ITEMSCOUNT');
+    localItemsCount && setItemCount(JSON.parse(localItemsCount));
+  }, [])
 
   let shopItemsTemp = [];
   useEffect(() => {
     (async () => {
       const { data } = await getbeers();
-      let localStorageData = getLocalStorage('SHOPINGITEMS')
-      if (localStorageData) {
-        for (let d of data) {
-          if (localStorageData.some(item => item.value === d.id)) {
-            shopItemsTemp.push(d);
-          }
-        }
-        setShopingItems(shopItemsTemp);
-        setItemCount(shopItemsTemp.map(itm => ({ id: itm.id, value: 1 })));
-      }
+      data.map(d => shopItems.includes(d.id) && shopItemsTemp.push(d));
+      setShopingItems(shopItemsTemp);
+      let itemcountarr = shopItemsTemp.map(itm => ({ id: itm.id, value: 1 }));
+      setItemCount(itemcountarr);
+      localStorage.setItem('ITEMSCOUNT', JSON.stringify(itemcountarr));
+
     })();
-  }, []);
+  }, [shopItems]);
+
 
   useEffect(() => {
     let total = 0;
@@ -42,9 +44,11 @@ const ShopingCart = () => {
     const count = [...itemCount];
     const index = count.indexOf(item);
     operation === "increment" ? count[index].value++ : count[index].value--;
-    if (count[index].value === 0) setShopingItems(shopingItems.filter(item => item.id !== count[index].id));
+    if (count[index].value === 0) handleShopItems(count[index].id);
     setItemCount(count);
+    localStorage.setItem('ITEMSCOUNT', JSON.stringify(count))
   }
+
   if (shopingItems.length === 0) return <p className="lead text-center">تا کنون کالایی برای خرید انتخاب نکرده ایید</p>;
   return (
     <>
@@ -53,13 +57,15 @@ const ShopingCart = () => {
           <div className="row row-cols-1 row-cols-md-4">
             {shopingItems.map(item =>
               <div className="col mb-4" key={item.id}>
+
                 <ShopingCard
                   data={item}
-                  count={itemCount.find(itm => itm.id === item.id) || []}
-                  onIncerement={() => handleIncrementDecrement(itemCount.find(itm => itm.id === item.id), "increment")}
-                  onDecrement={() => handleIncrementDecrement(itemCount.find(itm => itm.id === item.id), "decrement")}
+                  count={itemCount.find(itmcount => itmcount.id === item.id) || []}
+                  onIncerement={() => handleIncrementDecrement(itemCount.find(count => count.id === item.id), "increment")}
+                  onDecrement={() => handleIncrementDecrement(itemCount.find(count => count.id === item.id), "decrement")}
 
                 />
+
               </div>
             )}
           </div>
@@ -71,9 +77,6 @@ const ShopingCart = () => {
           />
         </div>
       </div>
-
-
-
 
     </>
   );

@@ -1,19 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Card from 'react-bootstrap/Card'
-import Image from 'react-bootstrap/Image'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
-import { getLocalStorage, setLocalStorage } from './handleLocalStorage';
-import { StyledCard ,StyledImg} from './styledComponents';
+import { StyledCard, StyledImg } from './styledComponents';
 const ShopingCard = ({ data, onIncerement, onDecrement, count }) => {
     const { image_url, name, tagline, srm } = data;
-
-    if (count.value === 0) {
-        let shopingItems = getLocalStorage('SHOPINGITEMS');
-        setLocalStorage('SHOPINGITEMS', shopingItems.filter(id => id !== data.id)); 
-        return <></>;
-    }
+  
     return (
         <StyledCard className="text-center mx-auto h-100">
             <Card.Body>

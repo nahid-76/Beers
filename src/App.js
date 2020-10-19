@@ -9,18 +9,28 @@ import Favorites from './components/favorites';
 import Home from './components/home';
 import 'react-toastify/dist/ReactToastify.css';
 import NotFounf from './components/not-found';
-
-
+import FavsContextProvider from './contexts/favoritescontext';
+import ShopingItemsContextProvider from './contexts/shopingitemscontext';
 class App extends Component {
   render() {
     return (
       <>
         <ToastContainer />
-        <NavBar />
+        <ShopingItemsContextProvider>
+          <NavBar />
+        </ShopingItemsContextProvider>
         <div className="main">
           <Switch>
-            <Route path={`/favorites`} component={Favorites}></Route>
-            <Route path={`/shopingCard`} component={ShopingCart}></Route>
+            <Route path={`/favorites`}>
+              <FavsContextProvider>
+                <Favorites />
+              </FavsContextProvider>
+            </Route>
+            <Route path={`/shopingCard`}>
+              <ShopingItemsContextProvider>
+                <ShopingCart />
+              </ShopingItemsContextProvider>
+            </Route>
             <Route path={`/home`} component={Home}></Route>
             <Route path={`/not-found`} component={NotFounf}></Route>
             <Redirect from={`/`} exact to={`/home`} />

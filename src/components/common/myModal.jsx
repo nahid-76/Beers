@@ -1,25 +1,18 @@
-import React,{useEffect} from 'react';
-import { getLocalStorage, setLocalStorage } from './handleLocalStorage'
+import React, { useContext } from 'react';
 import { Modal, Button, Container, Row, Col } from 'react-bootstrap'
 import { StyledImg } from './styledComponents';
 import { toast } from "react-toastify";
 import MyExpandCollapse from './MyExpandCollapse.jsx';
+import { ShopingItemsContext } from '../../contexts/shopingitemscontext'
 const MyModal = ({ show, handleClose, data }) => {
+  const { handleShopItems } = useContext(ShopingItemsContext);
+  const { image_url, name, tagline, description, abv, srm, id } = data;
 
-  const { image_url, name, tagline, description, abv, srm } = data;
- 
   const onShopingBasketButtonClick = () => {
-    let storageDataParse = getLocalStorage('SHOPINGITEMS');
-    if (!storageDataParse.some(item => item.value === data.id)) {
-      storageDataParse.push({value:data.id,expiry:new Date().getTime() + 604799337.20621168613});
+    handleShopItems(id) ?
+      toast.error(`در سبد خرید وجود دارد:${data.name}`) :
       toast.success(`به سبد خرید اصافه شد:${data.name}`);
-    }
-    else {
-      toast.error(`در سبد خرید وجود دارد:${data.name}`);
-    }
-    setLocalStorage('SHOPINGITEMS', storageDataParse);
     handleClose();
-
   }
 
   return (

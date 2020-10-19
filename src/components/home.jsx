@@ -44,6 +44,7 @@ class Home extends Component {
             case "جفت با استیک":
                 filteredBeerItems = this.findPairFoods("beef");
                 break;
+            
 
         }
         return { filteredBeerItems };

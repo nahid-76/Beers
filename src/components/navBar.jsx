@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import Badge from 'react-bootstrap/Badge'
-import { getLocalStorage } from './common/handleLocalStorage'
+import { ShopingItemsContext } from '../contexts/shopingitemscontext'
 const NavBar = () => {
+    const { shopItems } = useContext(ShopingItemsContext);
+    const [shopItemsLenght, setShopItemsLenght] = useState(0);
+    useEffect(() => {
+        setShopItemsLenght(shopItems.length);
+    }, [shopItems])
     return (
         <Navbar collapseOnSelect expand="lg" bg="light" variant="light" className="fixed-top">
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -12,8 +16,7 @@ const NavBar = () => {
                 <Nav>
                     <Nav.Link as={Link} className="nav-link" to="/shopingCard">
                         <i className="fa fa-shopping-cart ml-1" aria-hidden="true"></i>
-                        سبد خرید
-
+                        {`سبد خرید/${shopItemsLenght}`}
                     </Nav.Link>
 
                     <Nav.Link as={Link} className="nav-link" to="/favorites">

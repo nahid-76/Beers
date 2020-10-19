@@ -1,31 +1,21 @@
 import React, { createContext, useEffect, useState } from 'react';
-// useEffect(() => {
-//     if (localdata) {
-//         console.log("localdata E", localdata);
-//         setFavs(localdataParse);
-//     }
-// }, []);
 export const FavsContext = createContext();
 const FavsContextProvider = (props) => {
-    const localdata = localStorage.getItem('FAVS');
-    const localdataParse = localdata ? JSON.parse(localdata) : [];
-    console.log("localdataParse",localdataParse);
-    const [favs, setFavs] = useState(localdataParse);
+    const [favs, setFavs] = useState([]);
+    useEffect(() => {
+        const localdata = localStorage.getItem('FAVS');
+        if (localdata) {
+            setFavs(JSON.parse(localdata));
+        }
+    }, []);
+
 
     const handleFavs = (id) => {
-        console.log("favs B", favs);
-        setFavs(prevFavs => {
-            const newFavs = prevFavs.includes(id) ? prevFavs.filter(fav => fav !== id) : [...prevFavs, id];
-            localStorage.setItem('FAVS', JSON.stringify(newFavs));
-            console.log("newFavs",newFavs);
-            return newFavs;
-        });
+        const newFavs = favs.includes(id) ? favs.filter(fav => fav !== id) : [...favs, id];
+        setFavs(newFavs);
+        localStorage.setItem('FAVS', JSON.stringify(newFavs));
     }
 
-
-
-    console.log("favs A", favs);
-    console.log("local A", localStorage.getItem('FAVS'));
     return (
         <FavsContext.Provider value={{ favs, handleFavs }}>
             {props.children}

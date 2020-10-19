@@ -3,6 +3,7 @@ import ShowModalCard from "./../showModalCard";
 import { useEffect } from "react";
 import { getLocalStorage, setLocalStorage } from "./handleLocalStorage";
 import FavsContextProvider from '../../contexts/favoritescontext';
+import ShopingItemsContextProvider from '../../contexts/shopingitemscontext';
 const localList = "starList";
 
 const MyCardGroup = ({ data }) => {
@@ -27,20 +28,22 @@ const MyCardGroup = ({ data }) => {
   //59999.9342466479939 one minute
   return (
     <FavsContextProvider>
-      <div className="row row-cols-1 row-cols-md-6">
-        {data.map((d, index) => {
-          const key = `card${index}${d.id}`;
-          return (
-            <div key={key}>
-              <ShowModalCard
-                data={d}
-                isStarActive={starList.some(item => item.value === d.id)}
-                onStarClick={() => handleStarClick(d.id)}
-              />
-            </div>
-          );
-        })}
-      </div>
+      <ShopingItemsContextProvider>
+        <div className="row row-cols-1 row-cols-md-6">
+          {data.map((d, index) => {
+            const key = `card${index}${d.id}`;
+            return (
+              <div key={key}>
+                <ShowModalCard
+                  data={d}
+                  isStarActive={starList.some(item => item.value === d.id)}
+                  onStarClick={() => handleStarClick(d.id)}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </ShopingItemsContextProvider>
     </FavsContextProvider>
   );
 };
